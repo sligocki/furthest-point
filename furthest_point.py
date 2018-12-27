@@ -14,7 +14,7 @@ class Point:
                  self.y - other.y,
                  self.z - other.z)
 
-  def __div__(self, scalar):
+  def __truediv__(self, scalar):
     return Point(self.x / scalar,
                  self.y / scalar,
                  self.z / scalar)
@@ -67,9 +67,9 @@ def extreme_point(ps):
   assert len(ps) >= 3
   best_point = None
   max_dist = 0
-  for i in xrange(len(ps)):
-    for j in xrange(i + 1, len(ps)):
-      for k in xrange(j + 1, len(ps)):
+  for i in range(len(ps)):
+    for j in range(i + 1, len(ps)):
+      for k in range(j + 1, len(ps)):
         aps = antipodal_points(ps[i], ps[j], ps[k])
         for ap in aps:
           d = dist_set(ap, ps)
@@ -94,11 +94,12 @@ def point2latlong(p):
           long / math.pi * 180.)
 
 
-import sys
-ps = []
-for i in xrange(1, len(sys.argv), 2):
-  lat = float(sys.argv[i])
-  long = float(sys.argv[i+1])
-  ps.append(latlong2point(lat, long))
-x, d = extreme_point(ps)
-print point2latlong(x), d * 6371
+if __name__ == "__main__":
+  import sys
+  ps = []
+  for i in range(1, len(sys.argv), 2):
+    lat = float(sys.argv[i])
+    long = float(sys.argv[i+1])
+    ps.append(latlong2point(lat, long))
+  x, d = extreme_point(ps)
+  print(point2latlong(x), d * 6371)
