@@ -55,6 +55,7 @@
           new google.maps.Marker({
               position: furthest_latlng,
               map: map,
+              label: "X",
             });
         }
 
@@ -62,7 +63,7 @@
           point = visited_points[i];
           new google.maps.Marker({
               position: {lat: point[0], lng: point[1]},
-              map: map
+              map: map,
             })
         }
       }

@@ -29,15 +29,14 @@ app = Flask(__name__)
 def show_furthest_point():
   """Calculate furthest point from every point user enters."""
   # Load user data
-  old_latlongs_json = request.args.get('latlongs_json')
-  if old_latlongs_json:
-    latlongs = json.loads(old_latlongs_json)
+  if 'latlongs_json' in request.values:
+    latlongs = json.loads(request.values['latlongs_json'])
   else:
     latlongs = []
 
-  if 'lat' in request.args and 'lng' in request.args:
-    latlongs.append([float(request.args['lat']),
-                     float(request.args['lng'])])
+  if 'lat' in request.values and 'lng' in request.values:
+    latlongs.append([float(request.values['lat']),
+                     float(request.values['lng'])])
   latlongs_json = json.dumps(latlongs)
 
   # Convert from lat-long to 3d point on unit sphere.
