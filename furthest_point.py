@@ -1,5 +1,8 @@
 import math
 
+class FurthestPointError(Exception):
+  pass
+
 class Point:
   def __init__(self, x, y, z):
     self.x = x
@@ -64,7 +67,8 @@ def dist_set(x, ps):
   return min_d
 
 def extreme_point(ps):
-  assert len(ps) >= 3
+  if len(ps) < 3:
+    raise FurthestPointError
   best_point = None
   max_dist = 0
   for i in range(len(ps)):

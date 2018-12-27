@@ -3,7 +3,7 @@
   <head>
     <style>
       #map {
-        height: 100%;
+        height: 70%;
       }
       html, body {
         height: 100%;
@@ -11,13 +11,13 @@
     </style>
   </head>
   <body>
-    <form method="get" action=".">
-          <label for="lat">Latitude:</label>
-          <input type="number" step="0.001" name="lat"><br />
-          <label for="lng">Longitude:</label>
-          <input type="number" step="0.001" name="lng"><br />
-          <input type="hidden" name="latlongs_json" value="{{visited_points_json}}" />
-          <input type="submit">
+    <form action="javascript:;" onSubmit="addPlace(place.value)">
+      <input type="text" name="place" />
+      <input type="submit" value="Add Place" />
+    </form>
+
+    <form action=".">
+      <input type="submit" value="Reset" />
     </form>
 
     <h1>Furthest location</h1>
@@ -35,11 +35,13 @@
       var visited_points = JSON.parse("{{visited_points_json}}");
 
       var map;
+      var geocoder;
       function initMap() {
         map = new google.maps.Map(document.getElementById('map'), {
-          center: furthest_latlng,
+          center: {lat: 0, lng: furthest_latlng.lng},
           zoom: 1
         });
+        geocoder = new google.maps.Geocoder();
 
         if (furthest_dist_m > 0) {
           new google.maps.Circle({
@@ -66,6 +68,18 @@
               map: map,
             })
         }
+      }
+
+      function addPlace(place) {
+        geocoder.geocode({'address': place},
+                         function(results, status) {
+          if (status == 'OK') {
+            latlng = results[0].geometry.location;
+            window.location.href = ".?lat=" + encodeURIComponent(latlng.lat()) + "&lng=" + encodeURIComponent(latlng.lng()) + "&latlongs_json=" + JSON.stringify(visited_points)
+          } else {
+            alert('We could not find the place you entered. Error: ' + status);
+          }
+        });
       }
     </script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDbJax4x3Az-a5nGTfbGN0eV2Upc-oAknw&callback=initMap" async defer></script>

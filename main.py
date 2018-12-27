@@ -51,7 +51,7 @@ def show_furthest_point():
     # Convert these back into Human readable values.
     extreme_lat, extreme_long = furthest_point.point2latlong(extreme_point)
     distance_km = unscaled_dist * 6371  # Radius of Earth in kilometers.
-  except:
+  except furthest_point.FurthestPointError:
     extreme_lat  = 0.0
     extreme_long = 0.0
     distance_km = 0.0
