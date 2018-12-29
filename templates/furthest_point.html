@@ -1,6 +1,16 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-116295486-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-116295486-1');
+    </script>
+
     <style>
       #map {
         height: 70%;
@@ -10,15 +20,14 @@
       }
     </style>
   </head>
+
   <body>
     <form action="javascript:;" onSubmit="addPlace(place.value)">
       <input type="text" name="place" />
       <input type="submit" value="Add Place" />
     </form>
 
-    <form action=".">
-      <input type="submit" value="Reset" />
-    </form>
+    <a href=".">Reset</a>
 
     <h1>Furthest location</h1>
     <ul>
@@ -43,8 +52,12 @@
         });
         geocoder = new google.maps.Geocoder();
 
+        map.addListener('click', function(event) {
+          addPoint(event.latLng);
+        });
+
         if (furthest_dist_m > 0) {
-          new google.maps.Circle({
+          var circle = new google.maps.Circle({
               strokeColor: '#FF0000',
               strokeOpacity: 0.8,
               strokeWeight: 2,
@@ -59,23 +72,35 @@
               map: map,
               label: "X",
             });
+          circle.addListener('click', function(event) {
+            addPoint(event.latLng);
+          });
         }
 
         for (var i = 0; i < visited_points.length; ++i) {
           point = visited_points[i];
-          new google.maps.Marker({
+          var marker = new google.maps.Marker({
               position: {lat: point[0], lng: point[1]},
               map: map,
-            })
+            });
+          // TODO
+          // marker.addListener('dblclick', function() {
+          //   marker.setMap(null);
+          // });
         }
+      }
+
+      function addPoint(latLng) {
+        window.location.href = (".?lat=" + encodeURIComponent(latLng.lat()) +
+                                "&lng=" + encodeURIComponent(latLng.lng()) +
+                                "&latlongs_json=" + JSON.stringify(visited_points));
       }
 
       function addPlace(place) {
         geocoder.geocode({'address': place},
                          function(results, status) {
           if (status == 'OK') {
-            latlng = results[0].geometry.location;
-            window.location.href = ".?lat=" + encodeURIComponent(latlng.lat()) + "&lng=" + encodeURIComponent(latlng.lng()) + "&latlongs_json=" + JSON.stringify(visited_points)
+            addPoint(results[0].geometry.location);
           } else {
             alert('We could not find the place you entered. Error: ' + status);
           }
