@@ -97,7 +97,6 @@ def point2latlong(p):
   return (lat  / math.pi * 180.,
           long / math.pi * 180.)
 
-
 if __name__ == "__main__":
   import sys
   ps = []
