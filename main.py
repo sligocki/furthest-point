@@ -44,14 +44,14 @@ def show_furthest_point():
   for (lat, long) in latlongs:
     visited_points.append(furthest_point.latlong2point(lat, long))
 
-  try:
-    # Find furthest point
-    extreme_point, unscaled_dist = furthest_point.extreme_point(visited_points)
+  # Find furthest point
+  extreme_point, unscaled_dist = furthest_point.extreme_point(visited_points)
 
+  if extreme_point:
     # Convert these back into Human readable values.
     extreme_lat, extreme_long = furthest_point.point2latlong(extreme_point)
     distance_km = unscaled_dist * 6371  # Radius of Earth in kilometers.
-  except furthest_point.FurthestPointError:
+  else:
     extreme_lat  = 0.0
     extreme_long = 0.0
     distance_km = 0.0

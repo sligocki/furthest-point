@@ -47,6 +47,16 @@ def cross(p1, p2):
                p1.z * p2.x - p2.z * p1.x,
                p1.x * p2.y - p2.x * p1.y)
 
+def antipodal2(p1, p2):
+  """Given 2 points on a unit sphere, find the two
+  (antipodal) points on the sphere which are the max
+  and min distance from p1 & p2."""
+  bisector_normal = p2 - p1
+  plane_normal = cross(p1, p2)
+  antipodal_vector = cross(bisector_normal, plane_normal)
+  res_p = antipodal_vector.normalize()
+  return res_p, -res_p
+
 def antipodal_points(p1, p2, p3):
   """Given 3 points on a unit sphere (p1, p2, p3).
   Find the two (antipodal) points on the sphere which
@@ -67,12 +77,19 @@ def dist_set(x, ps):
   return min_d
 
 def extreme_point(ps):
-  if len(ps) < 3:
-    raise FurthestPointError
+  if len(ps) == 1:
+    return -ps[0], 2 * math.pi
   best_point = None
   max_dist = 0
   for i in range(len(ps)):
     for j in range(i + 1, len(ps)):
+      aps = antipodal2(ps[i], ps[j])
+      for ap in aps:
+        d = dist_set(ap, ps)
+        if d > max_dist:
+          best_point = ap
+          max_dist = d
+
       for k in range(j + 1, len(ps)):
         aps = antipodal_points(ps[i], ps[j], ps[k])
         for ap in aps:
@@ -80,6 +97,7 @@ def extreme_point(ps):
           if d > max_dist:
             best_point = ap
             max_dist = d
+
   return best_point, max_dist
 
 
